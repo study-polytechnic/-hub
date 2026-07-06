@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Free Polytechnic Courses & Study Materials">
+    <meta name="theme-color" content="#0A192F">
+    <title>Free Courses | Polytechnic Hub</title>
+    
+    <style>
+        /* ==========================================================================
+           CSS Variables & Premium Theming (Dark Blue + Black Default)
+           ========================================================================== */
+        :root {
+            --bg-color: #050B14;
+            --bg-gradient: linear-gradient(135deg, #0A192F 0%, #000000 100%);
+            --header-bg: rgba(4, 10, 20, 0.85); 
+            --card-bg: linear-gradient(145deg, rgba(27, 42, 65, 0.95) 0%, rgba(17, 34, 64, 0.85) 100%);
+            --text-main: #FFFFFF;
+            --text-sec: #B8C5D6;
+            --primary: #00BFFF;
+            --primary-hover: #0099CC;
+            --radius: 16px;
+            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --card-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.8);
+            --card-shadow-hover: 0 25px 50px -10px rgba(0, 191, 255, 0.25);
+            --border-top: rgba(255, 255, 255, 0.1);
+            --border-left: rgba(255, 255, 255, 0.05);
+            --border-subtle: rgba(255, 255, 255, 0.05);
+        }
+
+        /* ==========================================================================
+           Base & Reset
+           ========================================================================== */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        html { scroll-behavior: smooth; font-size: 16px; }
+
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg-gradient);
+            background-color: var(--bg-color);
+            background-attachment: fixed;
+            color: var(--text-main);
+            line-height: 1.6;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        a { text-decoration: none; color: inherit; }
+        ul { list-style: none; }
+
+        /* ==========================================================================
+           Layout & Utilities
+           ========================================================================== */
+        .container {
+            width: 100%;
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 5%;
+        }
+
+        .btn {
+            display: inline-flex; align-items: center; justify-content: center;
+            background-color: var(--primary); color: #FFFFFF;
+            padding: 12px 28px; border-radius: var(--radius);
+            font-weight: 600; font-size: 1rem; border: none; cursor: pointer;
+            transition: all var(--transition); gap: 8px;
+        }
+
+        .btn:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Top Header */
+        header {
+            position: fixed; top: 0; left: 0; width: 100%; z-index: 1000;
+            background: var(--header-bg); backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px); border-bottom: 1px solid var(--border-subtle);
+            height: 76px; display: flex; align-items: center;
+        }
+
+        .header-content {
+            display: flex; align-items: center; justify-content: space-between;
+            width: 100%;
+        }
+
+        .back-btn {
+            display: flex; align-items: center; gap: 8px;
+            background: none; border: none; color: var(--text-main);
+            font-size: 1.1rem; font-weight: 600; cursor: pointer;
+            transition: color var(--transition);
+        }
+        .back-btn:hover { color: var(--primary); }
+        .back-btn svg { width: 24px; height: 24px; fill: currentColor; }
+
+        .page-title {
+            font-size: 1.3rem; font-weight: 700; letter-spacing: -0.5px;
+        }
+
+        /* Main Content Area */
+        main {
+            padding: 110px 0 60px; /* Offset for header */
+            min-height: calc(100vh - 76px);
+        }
+
+        .section-header {
+            text-align: center; margin-bottom: 3rem;
+        }
+        
+        .section-header h1 {
+            font-size: clamp(2rem, 4vw, 2.75rem); font-weight: 800; margin-bottom: 0.5rem;
+        }
+
+        .section-header p {
+            color: var(--text-sec); font-size: 1.1rem;
+        }
+
+        /* View Switching (SPA logic) */
+        .view-section {
+            display: none;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeIn 0.5s forwards;
+        }
+        .view-section.active { display: block; }
+
+        @keyframes fadeIn {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ==========================================================================
+           3D Grid Cards (Semesters & Branches)
+           ========================================================================== */
+        .grid-layout {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .premium-card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 2.5rem 1.5rem;
+            display: flex; flex-direction: column; align-items: center; text-align: center;
+            gap: 1.2rem; cursor: pointer;
+            box-shadow: var(--card-shadow);
+            border-top: 1px solid var(--border-top);
+            border-left: 1px solid var(--border-left);
+            backdrop-filter: blur(10px);
+            transform-style: preserve-3d; transform: perspective(1000px);
+            transition: box-shadow var(--transition), border-color var(--transition);
+            will-change: transform;
+        }
+
+        .premium-card:hover {
+            box-shadow: var(--card-shadow-hover);
+            border-color: rgba(0, 191, 255, 0.4); z-index: 2;
+        }
+
+        .premium-card:active {
+            transform: perspective(1000px) scale3d(0.97, 0.97, 1) !important;
+        }
+
+        .card-icon {
+            width: 64px; height: 64px; border-radius: 50%;
+            background: rgba(0, 191, 255, 0.1); color: var(--primary);
+            display: flex; align-items: center; justify-content: center;
+            transform: translateZ(30px); transition: transform var(--transition);
+        }
+        .card-icon svg { width: 32px; height: 32px; fill: currentColor; }
+        
+        .premium-card h3 { font-size: 1.3rem; font-weight: 700; transform: translateZ(20px); }
+
+        /* ==========================================================================
+           Study Materials List View
+           ========================================================================== */
+        .materials-list {
+            display: flex; flex-direction: column; gap: 1.2rem;
+            max-width: 900px; margin: 0 auto;
+        }
+
+        .material-item {
+            display: flex; align-items: center; justify-content: space-between;
+            background: var(--card-bg); padding: 1.5rem 2rem;
+            border-radius: var(--radius);
+            border-top: 1px solid var(--border-top); border-left: 1px solid var(--border-left);
+            box-shadow: var(--card-shadow); backdrop-filter: blur(10px);
+            transition: transform var(--transition), box-shadow var(--transition);
+        }
+
+        .material-item:hover {
+            transform: translateY(-5px); box-shadow: var(--card-shadow-hover);
+            border-color: rgba(0, 191, 255, 0.3);
+        }
+
+        .material-info {
+            display: flex; align-items: center; gap: 1.2rem;
+        }
+
+        .file-icon {
+            width: 48px; height: 48px; border-radius: 12px;
+            background: rgba(255, 255, 255, 0.05); display: flex; align-items: center; justify-content: center;
+        }
+
+        /* Differentiate PDF vs HTML icons based on file type */
+        .icon-pdf { color: #ff4d4f; }
+        .icon-html { color: #00BFFF; }
+
+        .material-info h4 {
+            font-size: 1.2rem; font-weight: 600; margin-bottom: 0.2rem;
+        }
+        
+        .material-info p {
+            color: var(--text-sec); font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .material-item { flex-direction: column; align-items: flex-start; gap: 1.5rem; padding: 1.5rem; }
+            .material-item .btn { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Sticky Header -->
+    <header>
+        <div class="container header-content">
+            <!-- Dynamic Back Button -->
+            <button class="back-btn" id="backBtn" onclick="navigateBack()">
+                <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+                <span>Back</span>
+            </button>
+            <div class="page-title" id="headerTitle">Polytechnic Hub</div>
+            <div style="width: 70px;"></div> <!-- Spacer for center alignment -->
+        </div>
+    </header>
+
+    <main class="container">
+        
+        <!-- ==========================================================================
+             VIEW 1: Semester Selection
+             ========================================================================== -->
+        <section id="view-semesters" class="view-section active">
+            <div class="section-header">
+                <h1>Select Semester</h1>
+                <p>Choose your current semester to find your syllabus and materials.</p>
+            </div>
+            
+            <div class="grid-layout" id="semester-grid">
+                <!-- Javascript will populate this -->
+            </div>
+        </section>
+
+        <!-- ==========================================================================
+             VIEW 2: Branch Selection
+             ========================================================================== -->
+        <section id="view-branches" class="view-section">
+            <div class="section-header">
+                <h1 id="branch-title">Select Branch</h1>
+                <p>Choose your engineering branch.</p>
+            </div>
+            
+            <div class="grid-layout" id="branch-grid">
+                <!-- Javascript will populate this -->
+            </div>
+        </section>
+
+        <!-- ==========================================================================
+             VIEW 3: Study Materials
+             ========================================================================== -->
+        <section id="view-materials" class="view-section">
+            <div class="section-header">
+                <h1 id="materials-title">Study Materials</h1>
+                <p id="materials-subtitle">Access your free notes, courses, and MCQs.</p>
+            </div>
+            
+            <div class="materials-list" id="materials-list">
+                <!-- Javascript will populate this -->
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ==========================================================================
+         SPA & Navigation Logic
+         ========================================================================== -->
+    <script>
+        // --- 1. STATE MANAGEMENT ---
+        let currentStep = 'semesters'; // 'semesters' | 'branches' | 'materials'
+        let selectedSemester = '';
+        let selectedBranch = '';
+
+        // --- 2. DATA CONFIGURATION (EASY TO UPDATE) ---
+        const semestersList = [
+            "First Semester", "Second Semester", "Third Semester", 
+            "Fourth Semester", "Fifth Semester", "Sixth Semester"
+        ];
+
+        const branchesList = [
+            "Electrical Engineering", "Civil Engineering", "Mechanical Engineering",
+            "Computer Engineering", "Electronics Engineering", "Automobile Engineering",
+            "Electrical & Electronics Engineering", "Mining Engineering", "Architecture",
+            "Information Technology", "Chemical Engineering", "Textile Engineering"
+        ];
+
+        /* ================================================================
+           🔥 HOW TO ADD NEW FILES:
+           Just find the semester, find the branch, and add a new row like this:
+           { title: "Your File Name", file: "filename.pdf", type: "pdf" }
+           
+           (Note: introduction.pdf is injected automatically. You don't need to add it here.)
+           ================================================================
+        */
+        const materialsDatabase = {
+            "Third Semester": {
+                "Electrical Engineering": [
+                    { title: "Electrical Circuit and Network – 200 Objective Questions", file: "electrical_circuit_200mcq.html", type: "html" }
+                ],
+                "Civil Engineering": [
+                    { title: "Concrete Technology – 100 MCQs", file: "concrete_technology_100_mcqs.html", type: "html" }
+                ]
+            }
+            // You can add more semesters and branches below:
+            // "First Semester": {
+            //      "Mechanical Engineering": [
+            //          { title: "Physics Chapter 1 Notes", file: "physics_ch1.pdf", type: "pdf" }
+            //      ]
+            // }
+        };
+
+
+        // --- 3. DOM ELEMENTS ---
+        const viewSemesters = document.getElementById('view-semesters');
+        const viewBranches = document.getElementById('view-branches');
+        const viewMaterials = document.getElementById('view-materials');
+        const headerTitle = document.getElementById('headerTitle');
+
+        // --- 4. NAVIGATION CONTROLLER ---
+        function switchView(viewName) {
+            // Hide all views
+            viewSemesters.classList.remove('active');
+            viewBranches.classList.remove('active');
+            viewMaterials.classList.remove('active');
+
+            // Update State & Show Target View
+            currentStep = viewName;
+            
+            if (viewName === 'semesters') {
+                viewSemesters.classList.add('active');
+                headerTitle.innerText = "Polytechnic Hub";
+            } 
+            else if (viewName === 'branches') {
+                viewBranches.classList.add('active');
+                document.getElementById('branch-title').innerText = selectedSemester;
+                headerTitle.innerText = selectedSemester;
+            } 
+            else if (viewName === 'materials') {
+                viewMaterials.classList.add('active');
+                document.getElementById('materials-title').innerText = selectedBranch;
+                document.getElementById('materials-subtitle').innerText = selectedSemester;
+                headerTitle.innerText = `${selectedSemester} - ${selectedBranch}`;
+            }
+            
+            window.scrollTo(0, 0); // Scroll to top on view change
+        }
+
+        function navigateBack() {
+            if (currentStep === 'semesters') {
+                // Return to main index.html
+                window.location.href = 'index.html';
+            } else if (currentStep === 'branches') {
+                switchView('semesters');
+            } else if (currentStep === 'materials') {
+                switchView('branches');
+            }
+        }
+
+        // --- 5. RENDER FUNCTIONS ---
+        
+        // A. Render Semesters
+        function renderSemesters() {
+            const grid = document.getElementById('semester-grid');
+            grid.innerHTML = '';
+            
+            // SVG Icon for Semesters
+            const semesterIcon = `<svg viewBox="0 0 24 24"><path d="M12 3L1 9l4 2.18v6L12 21l7-3.82v-6l2-1.09V17h2V9L12 3zm6.82 6L12 12.72 5.18 9 12 5.28 18.82 9zM17 15.99l-5 2.73-5-2.73v-3.72L12 15l5-2.73v3.72z"/></svg>`;
+
+            semestersList.forEach(sem => {
+                const card = document.createElement('div');
+                card.className = 'premium-card js-tilt';
+                card.innerHTML = `
+                    <div class="card-icon">${semesterIcon}</div>
+                    <h3>${sem}</h3>
+                `;
+                card.onclick = () => {
+                    selectedSemester = sem;
+                    switchView('branches');
+                };
+                grid.appendChild(card);
+            });
+            applyTiltEffect();
+        }
+
+        // B. Render Branches
+        function renderBranches() {
+            const grid = document.getElementById('branch-grid');
+            grid.innerHTML = '';
+
+            // SVG Icon for Branches
+            const branchIcon = `<svg viewBox="0 0 24 24"><path d="M19.43 12.98c.04-.32.07-.64.07-.98 0-.34-.03-.66-.07-.98l2.11-1.65c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.23-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64l2.11 1.65c-.04.32-.07.65-.07.98 0 .33.03.66.07.98l-2.11 1.65c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.61-.25 1.17-.59 1.69-.98l2.49 1c.23.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.65zM12 15.5c-1.93 0-3.5-1.57-3.5-3.5s1.57-3.5 3.5-3.5 3.5 1.57 3.5 3.5-1.57 3.5-3.5 3.5z"/></svg>`;
+
+            branchesList.forEach(branch => {
+                const card = document.createElement('div');
+                card.className = 'premium-card js-tilt';
+                card.innerHTML = `
+                    <div class="card-icon">${branchIcon}</div>
+                    <h3>${branch}</h3>
+                `;
+                card.onclick = () => {
+                    selectedBranch = branch;
+                    renderMaterialsList();
+                    switchView('materials');
+                };
+                grid.appendChild(card);
+            });
+            applyTiltEffect();
+        }
+
+        // C. Render Materials List
+        function renderMaterialsList() {
+            const list = document.getElementById('materials-list');
+            list.innerHTML = '';
+
+            // Icon SVG definitions
+            const pdfIcon = `<svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><path d="M20 2H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8.5 7.5c0 .83-.67 1.5-1.5 1.5H9v2H7.5V7H10c.83 0 1.5.67 1.5 1.5v1zm5 2c0 .83-.67 1.5-1.5 1.5h-2.5V7H15c.83 0 1.5.67 1.5 1.5v3zm4-3H19v1h1.5V11H19v2h-1.5V7h3v1.5zM9 9.5h1v-1H9v1zM4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm10 5.5h1v-3h-1v3z"/></svg>`;
+            const htmlIcon = `<svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15h-2v-2h2v2zm0-4h-2V7h2v6zm5 4h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>`;
+
+            // Helper function to create rows
+            const createMaterialRow = (title, fileName, type) => {
+                const isPdf = type === 'pdf';
+                const iconSVG = isPdf ? pdfIcon : htmlIcon;
+                const iconClass = isPdf ? 'icon-pdf' : 'icon-html';
+                const fileDesc = isPdf ? 'PDF Document' : 'Interactive Module';
+
+                return `
+                    <div class="material-item">
+                        <div class="material-info">
+                            <div class="file-icon ${iconClass}">
+                                ${iconSVG}
+                            </div>
+                            <div>
+                                <h4>${title}</h4>
+                                <p>${fileDesc} • Free</p>
+                            </div>
+                        </div>
+                        <a href="${fileName}" class="btn" ${isPdf ? 'target="_blank" rel="noopener noreferrer"' : ''}>
+                            Open File
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" style="margin-left: 4px;"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
+                        </a>
+                    </div>
+                `;
+            };
+
+            // RULE: "introduction.pdf" MUST ALWAYS BE THE FIRST STUDY MATERIAL.
+            list.innerHTML += createMaterialRow("Polytechnic Hub Introduction", "introduction.pdf", "pdf");
+
+            // Look up specific materials for this semester & branch in our database
+            const semesterData = materialsDatabase[selectedSemester];
+            if (semesterData && semesterData[selectedBranch]) {
+                const branchMaterials = semesterData[selectedBranch];
+                
+                // Append specific files
+                branchMaterials.forEach(item => {
+                    list.innerHTML += createMaterialRow(item.title, item.file, item.type);
+                });
+            } else {
+                // Optional: Show empty state graphic if no additional notes are available yet
+                const emptyMsg = document.createElement('div');
+                emptyMsg.style.textAlign = 'center';
+                emptyMsg.style.padding = '3rem 1rem';
+                emptyMsg.style.color = 'var(--text-sec)';
+                emptyMsg.innerHTML = `<p>More study materials for this branch are coming soon!</p>`;
+                list.appendChild(emptyMsg);
+            }
+        }
+
+        // --- 6. UTILITIES (3D Tilt Effect) ---
+        function applyTiltEffect() {
+            if (window.matchMedia("(pointer: fine)").matches) {
+                const tiltCards = document.querySelectorAll('.js-tilt');
+                tiltCards.forEach(card => {
+                    // Prevent attaching multiple listeners if re-rendered
+                    const newCard = card.cloneNode(true);
+                    card.parentNode.replaceChild(newCard, card);
+                    
+                    newCard.addEventListener('mousemove', (e) => {
+                        const rect = newCard.getBoundingClientRect();
+                        const x = e.clientX - rect.left;
+                        const y = e.clientY - rect.top;
+                        const centerX = rect.width / 2;
+                        const centerY = rect.height / 2;
+                        const rotateX = ((y - centerY) / centerY) * -10;
+                        const rotateY = ((x - centerX) / centerX) * 10;
+                        newCard.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+                    });
+
+                    newCard.addEventListener('mouseleave', () => {
+                        newCard.style.transform = `perspective(1000px) rotateX(0) rotateY(0) scale3d(1, 1, 1)`;
+                    });
+                });
+            }
+        }
+
+        // --- 7. INITIALIZATION ---
+        renderSemesters();
+        renderBranches();
+        switchView('semesters'); // Start at semesters view
+
+    </script>
+</body>
+</html>
